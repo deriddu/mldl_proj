@@ -24,6 +24,7 @@ __C.DATA.IGNORE_LABEL = 255
 __C.DATA.IGNORE_LABEL_TO_TRAIN_ID = 19  # 255->19
                                           
 
+# Mean and STD of the img in the dataset, respectively for RGB
 __C.DATA.MEAN_STD = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 
 # ------------------------------TRAIN------------------------
@@ -37,7 +38,7 @@ __C.TRAIN.PRETRAINED_ENCODER = ''  # Path of the pretrained encoder
 __C.TRAIN.BATCH_SIZE = 16  # imgs
 __C.TRAIN.IMG_SIZE = (224, 448)
 
-__C.TRAIN.GPU_ID = [0]
+__C.TRAIN.GPU_ID = [0]  # Insert GPU_ID
 
 
 __C.TRAIN.RESUME = ''  # model path

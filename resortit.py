@@ -5,8 +5,8 @@ from torch.utils import data
 import numpy as np
 from config import cfg
 
-processed_train_path = os.path.join(cfg.DATA.DATA_PATH, 'train')
-processed_val_path = os.path.join(cfg.DATA.DATA_PATH, 'val')
+processed_train_path = os.path.join(cfg.DATA.DATA_PATH, 'train')  # Path of training imgs
+processed_val_path = os.path.join(cfg.DATA.DATA_PATH, 'val')  # Path of validation imgs
 
 
 def default_loader(path):
@@ -14,6 +14,7 @@ def default_loader(path):
 
 
 def make_dataset(mode):
+    # returns a list of all image paths of the training set (mode='train') or of the validation set (mode='val')
     images = []
     if mode == 'train':
         processed_train_img_path = processed_train_path
@@ -34,10 +35,11 @@ def make_dataset(mode):
 
 class resortit(data.Dataset):
     def __init__(self, mode, simul_transform=None, transform=None, target_transform=None):
-        self.imgs = make_dataset(mode)
+        self.imgs = make_dataset(mode)  # Load imgs
         if len(self.imgs) == 0:
             raise (RuntimeError('Found 0 images, please check the data set'))
-        self.loader = default_loader
+        self.loader = default_loader  # How to load imgs from the path
+        # Define how to transform imgs
         self.simul_transform = simul_transform
         self.transform = transform
         self.target_transform = target_transform
@@ -46,7 +48,7 @@ class resortit(data.Dataset):
         img_path, mask_path = self.imgs[index]
         img = self.loader(img_path)
         mask = np.array(self.loader(mask_path))
-        mask[mask>0] = 1   ##########Only Binary Segmentation#####
+        mask[mask > 0] = 1   ##########Only Binary Segmentation#####
         mask = Image.fromarray(mask)
         if self.simul_transform is not None:
             img, mask = self.simul_transform(img, mask)
