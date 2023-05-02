@@ -7,7 +7,7 @@ import pdb
 
 
 class InitialBlock(nn.Module):
-    '''
+    """
     The initial block for Enet has 2 branches: The convolution branch and
     maxpool branch.
     The conv branch has 13 layers, while the maxpool branch gives 3 layers
@@ -15,7 +15,7 @@ class InitialBlock(nn.Module):
     Both output layers are then concatenated to give an output of 16 layers.
     INPUTS:
     - input(Tensor): A 4D tensor of shape [batch_size, channel, height, width]
-    '''
+    """
 
     def __init__(self):
         super(InitialBlock, self).__init__()
@@ -36,11 +36,11 @@ class BottleNeck(nn.Module):
     The bottle module has three different kinds of variants:
     1. A regular convolution which you can decide whether or not to downsample.
     2. A dilated convolution which requires you to have a dilation factor.
-    3. An asymetric convolution that has a decomposed filter size of 5x1 and
+    3. An asymmetric convolution that has a decomposed filter size of 5x1 and
     1x5 separately.
     INPUTS:
     - inputs(Tensor): a 4D Tensor of the previous convolutional block of shape
-    [batch_size, channel, height, widht].
+    [batch_size, channel, height, width].
     - output_channels(int): an integer indicating the output depth of the
     output convolutional block.
     - regularlizer_prob(float): the float p that represents the prob of
@@ -130,12 +130,12 @@ class BottleNeck(nn.Module):
         input_shape = input.size()
         if self.downsampling:
             main, indices = self.pool(input)
-            if (self.output_channels != self.input_channels):
+            if self.output_channels != self.input_channels:
                 pad = Variable(torch.Tensor(input_shape[0],
                                self.output_channels - self.input_channels,
                                input_shape[2] // 2,
                                input_shape[3] // 2).zero_(), requires_grad=False)
-                if (torch.cuda.is_available):
+                if torch.cuda.is_available:
                     pad = pad.cuda(0)
                 main = torch.cat((main, pad), 1)
         elif self.upsampling:
@@ -147,9 +147,10 @@ class BottleNeck(nn.Module):
                                   self.block1x1_2)
         other = other_net(input)
         output = F.relu(main + other)
-        if (self.downsampling):
+        if self.downsampling:
             return output, indices
         return output
+
 
 ENCODER_LAYER_NAMES = ['initial', 'bottleneck_1_0', 'bottleneck_1_1',
                        'bottleneck_1_2', 'bottleneck_1_3', 'bottleneck_1_4',
@@ -192,7 +193,6 @@ class Encoder(nn.Module):
         for layer, layer_name in zip(layers, ENCODER_LAYER_NAMES):
             super(Encoder, self).__setattr__(layer_name, layer)
         self.layers = layers
-
     
     def forward(self, input):
         pooling_stack = []
@@ -210,6 +210,7 @@ class Encoder(nn.Module):
         return output, pooling_stack
 
 
+# TO MODIFY for semantic segmentation
 class Decoder(nn.Module):
     def __init__(self, num_classes):
         super(Decoder, self).__init__()
@@ -241,9 +242,10 @@ class ENet(nn.Module):
     def __init__(self, only_encode=False):
         super(ENet, self).__init__()
         self.state = only_encode
-        self.encoder = Encoder(cfg.DATA.NUM_CLASSES,only_encode=only_encode)
+        self.encoder = Encoder(cfg.DATA.NUM_CLASSES, only_encode=only_encode)
         self.decoder = Decoder(cfg.DATA.NUM_CLASSES)
 
+    # Forward method of ENet -> encode and then decode (if state=False)
     def forward(self, input):
         output, pooling_stack = self.encoder(input)
         if not self.state:

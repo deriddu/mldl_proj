@@ -48,6 +48,8 @@ class resortit(data.Dataset):
         img_path, mask_path = self.imgs[index]
         img = self.loader(img_path)
         mask = np.array(self.loader(mask_path))
+        # In the dataset we have 5 classes, for Binary Seg we need only two
+        # All the trash categories becomes 1 -> mask[mask>0] = 1
         mask[mask > 0] = 1   ##########Only Binary Segmentation#####
         mask = Image.fromarray(mask)
         if self.simul_transform is not None:

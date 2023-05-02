@@ -4,6 +4,7 @@ import transforms as own_transforms
 from resortit import resortit
 from config import cfg
 
+
 def loading_data():
     mean_std = cfg.DATA.MEAN_STD
     train_simul_transform = own_transforms.Compose([
@@ -29,10 +30,10 @@ def loading_data():
     ])
 
     train_set = resortit('train', simul_transform=train_simul_transform, transform=img_transform,
-                           target_transform=target_transform)
+                         target_transform=target_transform)
     train_loader = DataLoader(train_set, batch_size=cfg.TRAIN.BATCH_SIZE, num_workers=16, shuffle=True)
     val_set = resortit('val', simul_transform=val_simul_transform, transform=img_transform,
-                         target_transform=target_transform)
+                       target_transform=target_transform)
     val_loader = DataLoader(val_set, batch_size=cfg.VAL.BATCH_SIZE, num_workers=16, shuffle=False)
 
     return train_loader, val_loader, restore_transform

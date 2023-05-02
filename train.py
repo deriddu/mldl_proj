@@ -58,7 +58,9 @@ def main():
         net = net.cuda()
 
     net.train()
-    criterion = torch.nn.BCEWithLogitsLoss().cuda()  # Binary Classification
+    # Binary Classification Loss, combines a sigmoid layer and a BCE Loss
+    criterion = torch.nn.BCEWithLogitsLoss().cuda()
+    # Method for stochastic optimization (Adam's algorithm)
     optimizer = optim.Adam(net.parameters(), lr=cfg.TRAIN.LR, weight_decay=cfg.TRAIN.WEIGHT_DECAY)
     scheduler = StepLR(optimizer, step_size=cfg.TRAIN.NUM_EPOCH_LR_DECAY, gamma=cfg.TRAIN.LR_DECAY)
     _t = {'train time': Timer(), 'val time': Timer()}
@@ -84,19 +86,14 @@ def train(train_loader, net, criterion, optimizer, epoch):
         # Convert the inputs and labels to CUDA tensors
         inputs = Variable(inputs).cuda()
         labels = Variable(labels).cuda()
-
         # Clear the gradients of all optimized tensors before computing the forward and backward pass
         optimizer.zero_grad()
-
         # Compute the output of the model for the current batch
         outputs = net(inputs)
-
         # Compute the loss between the predicted outputs and the ground truth labels
         loss = criterion(outputs, labels.unsqueeze(1).float())
-
         # Compute the gradients of the loss with respect to the model parameters
         loss.backward()
-
         # Update the model parameters based on the computed gradients and the optimization algorithm
         optimizer.step()
 
@@ -114,14 +111,14 @@ def validate(val_loader, net, criterion, optimizer, epoch, restore):
         labels = Variable(labels, volatile=True).cuda()
         outputs = net(inputs)
         # for binary classification
-        outputs[outputs>0.5] = 1
-        outputs[outputs<=0.5] = 0
-        # for multi-classification ???
+        outputs[outputs > 0.5] = 1
+        outputs[outputs <= 0.5] = 0
+        # for multi-classification we need 5 classes -> TO DO!!!
 
         iou_ += calculate_mean_iu([outputs.squeeze_(1).data.cpu().numpy()], [labels.data.cpu().numpy()], 2)
     mean_iu = iou_/len(val_loader)   
 
-    print('[mean iu %.4f]' % (mean_iu)) 
+    print('[mean iu %.4f]' % mean_iu)
     net.train()
     criterion.cuda()
 
