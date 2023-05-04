@@ -12,6 +12,8 @@ import torchvision.utils as vutils
 from tensorboardX import SummaryWriter
 
 from model_enet import ENet
+from model_icnet import ICNet
+from base import BaseModel
 from config import cfg
 from loading_data import loading_data
 from utils import *
@@ -30,15 +32,15 @@ def main():
 
     cfg_file = open('./config.py', "r")
     cfg_lines = cfg_file.readlines()
-    
+
     with open(log_txt, 'a') as f:
-            f.write(''.join(cfg_lines) + '\n\n\n\n')
+        f.write(''.join(cfg_lines) + '\n\n\n\n')
     if len(cfg.TRAIN.GPU_ID) == 1:
         torch.cuda.set_device(cfg.TRAIN.GPU_ID[0])
     torch.backends.cudnn.benchmark = True
 
-    net = []   
-    
+    net = []
+    ''' # ENet
     if cfg.TRAIN.STAGE == 'all':
         net = ENet(only_encode=False)  # ENet / BiSeNet / ICNet
         if cfg.TRAIN.PRETRAINED_ENCODER != '':
@@ -50,6 +52,11 @@ def main():
             net.encoder.load_state_dict(encoder_weight)
     elif cfg.TRAIN.STAGE == 'encoder':
         net = ENet(only_encode=True)
+    # ---------------------
+    '''
+    # ICNet
+    net = ICNet(num_classes=2)
+    # ---------------------
 
     if len(cfg.TRAIN.GPU_ID) > 1:
         # Parallelize
