@@ -143,7 +143,6 @@ class ICNet(BaseModel):
 			x_cff_12 = F.interpolate(x_cff_12, scale_factor=2, mode='bilinear', align_corners=True)
 			x_124_cls = self.conv_cls(x_cff_12)
 			x_124_cls = F.interpolate(x_124_cls, scale_factor=4, mode='bilinear', align_corners=True)
-			print('\nvamos\n')
 			return x_124_cls
 
 	def _run_backbone_sub2(self, input):
