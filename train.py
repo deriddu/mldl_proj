@@ -55,7 +55,7 @@ def main():
     # ---------------------
     '''
     # ICNet
-    net = ICNet(num_classes=2)
+    net = ICNet(num_classes=1, training=False)
     # ---------------------
 
     if len(cfg.TRAIN.GPU_ID) > 1:

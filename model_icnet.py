@@ -82,7 +82,7 @@ class ICNet(BaseModel):
 	pyramids = [1, 2, 3, 6]
 	backbone_os = 8
 
-	def __init__(self, num_classes=2, training=True):
+	def __init__(self, num_classes=1, training=True):
 		super(ICNet, self).__init__()
 		n_layers = 34
 		stage5_channels = 512
@@ -143,6 +143,7 @@ class ICNet(BaseModel):
 			x_cff_12 = F.interpolate(x_cff_12, scale_factor=2, mode='bilinear', align_corners=True)
 			x_124_cls = self.conv_cls(x_cff_12)
 			x_124_cls = F.interpolate(x_124_cls, scale_factor=4, mode='bilinear', align_corners=True)
+			print('\nvamos\n')
 			return x_124_cls
 
 	def _run_backbone_sub2(self, input):
