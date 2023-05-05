@@ -41,7 +41,7 @@ class PyramidPoolingModule(nn.Module):
 		for bin_size in self.pyramids:
 			x = F.adaptive_avg_pool2d(input, output_size=bin_size)
 			x = F.interpolate(x, size=(height, width), mode='bilinear', align_corners=True)
-			feat  = feat + x
+			feat = feat + x
 		return feat
 
 
@@ -82,10 +82,11 @@ class ICNet(BaseModel):
 	pyramids = [1, 2, 3, 6]
 	backbone_os = 8
 
-	def __init__(self, num_classes=2):
+	def __init__(self, num_classes=2, training=True):
 		super(ICNet, self).__init__()
 		n_layers = 34
 		stage5_channels = 512
+		self.training = training
 
 		# Sub1
 		self.conv_sub1 = nn.Sequential(OrderedDict([
