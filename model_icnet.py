@@ -51,14 +51,19 @@ class PyramidPoolingModule(nn.Module):
 class CascadeFeatFusion(nn.Module):
 	def __init__(self, low_channels, high_channels, out_channels, num_classes):
 		super(CascadeFeatFusion, self).__init__()
+		# Convolution for low-level features
 		self.conv_low = nn.Sequential(OrderedDict([
 			('conv', nn.Conv2d(low_channels, out_channels, kernel_size=3, dilation=2, padding=2, bias=False)),
 			('bn', nn.BatchNorm2d(out_channels))
 		]))
+
+		# Convolution for high-level features
 		self.conv_high = nn.Sequential(OrderedDict([
 			('conv', nn.Conv2d(high_channels, out_channels, kernel_size=1, bias=False)),
 			('bn', nn.BatchNorm2d(out_channels))
 		]))
+
+		# Final convolution to compute the final prediction scores
 		self.conv_low_cls = nn.Conv2d(out_channels, num_classes, kernel_size=1, bias=False)
 
 	def forward(self, input_low, input_high):
@@ -82,11 +87,10 @@ class ICNet(BaseModel):
 	pyramids = [1, 2, 3, 6]
 	backbone_os = 8
 
-	def __init__(self, num_classes=1, training=True):
+	def __init__(self, num_classes=1):
 		super(ICNet, self).__init__()
 		n_layers = 34
 		stage5_channels = 512
-		self.training = training
 
 		# Sub1
 		self.conv_sub1 = nn.Sequential(OrderedDict([
@@ -96,7 +100,7 @@ class ICNet(BaseModel):
 		]))
 
 		# Sub2 and Sub4
-		self.backbone = models.resnet34(pretrained=True)
+		self.backbone = models.resnet34(pretrained=True) # Define the backbone to be ResNet34 (pretrained)
 		self.ppm = PyramidPoolingModule(pyramids=self.pyramids)
 		self.conv_sub4_reduce = ConvBlock(stage5_channels, stage5_channels//4, kernel_size=1, bias=False)
 
