@@ -23,10 +23,10 @@ class ICNetLoss(nn.BCEWithLogitsLoss):
         pred_sub4, pred_sub8, pred_sub16, target = tuple(inputs)
         # [batch, H, W] -> [batch, 1, H, W]
         target = target.unsqueeze(1).float()
-        target_sub4 = F.interpolate(target, pred_sub4.size()[2:], mode='bilinear', align_corners=True).squeeze(1).long()
-        target_sub8 = F.interpolate(target, pred_sub8.size()[2:], mode='bilinear', align_corners=True).squeeze(1).long()
+        target_sub4 = F.interpolate(target, pred_sub4.size()[2:], mode='bilinear', align_corners=True).squeeze(1)
+        target_sub8 = F.interpolate(target, pred_sub8.size()[2:], mode='bilinear', align_corners=True).squeeze(1)
         target_sub16 = F.interpolate(target, pred_sub16.size()[2:], mode='bilinear', align_corners=True).squeeze(
-            1).long()
+            1)
         loss1 = super(ICNetLoss, self).forward(pred_sub4.squeeze_(1), target_sub4)
         loss2 = super(ICNetLoss, self).forward(pred_sub8.squeeze_(1), target_sub8)
         loss3 = super(ICNetLoss, self).forward(pred_sub16.squeeze_(1), target_sub16)
