@@ -27,8 +27,8 @@ class ICNetLoss(nn.BCEWithLogitsLoss):
         target_sub8 = F.interpolate(target, pred_sub8.size()[2:], mode='bilinear', align_corners=True).squeeze(1).long()
         target_sub16 = F.interpolate(target, pred_sub16.size()[2:], mode='bilinear', align_corners=True).squeeze(
             1).long()
-        loss1 = super(ICNetLoss, self).forward(pred_sub4, target_sub4)
-        loss2 = super(ICNetLoss, self).forward(pred_sub8, target_sub8)
-        loss3 = super(ICNetLoss, self).forward(pred_sub16, target_sub16)
+        loss1 = super(ICNetLoss, self).forward(pred_sub4.squeeze_(1), target_sub4)
+        loss2 = super(ICNetLoss, self).forward(pred_sub8.squeeze_(1), target_sub8)
+        loss3 = super(ICNetLoss, self).forward(pred_sub16.squeeze_(1), target_sub16)
         # return dict(loss=loss1 + loss2 * self.aux_weight + loss3 * self.aux_weight)
         return loss1 + loss2 * self.aux_weight + loss3 * self.aux_weight
