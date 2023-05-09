@@ -8,19 +8,19 @@ from torch.autograd import Variable
 __all__ = ['ICNetLoss']
 
 
-class ICNetLoss(nn.CrossEntropyLoss):
+class ICNetLoss(nn.BCEWithLogitsLoss):
     """Cross Entropy Loss for ICNet"""
 
-    def __init__(self, aux_weight=0.4, ignore_index=-1):
+    def __init__(self, aux_weight=0.4):
         # Why aux_weight is 0.4 ???
-        super(ICNetLoss, self).__init__(ignore_index=ignore_index)
+        super(ICNetLoss, self).__init__()
         self.aux_weight = aux_weight
 
     def forward(self, *inputs):
         preds, target = tuple(inputs)
         inputs = tuple(list(preds) + [target])
 
-        pred, pred_sub4, pred_sub8, pred_sub16, target = tuple(inputs)
+        pred_sub4, pred_sub8, pred_sub16, target = tuple(inputs)
         # [batch, H, W] -> [batch, 1, H, W]
         target = target.unsqueeze(1).float()
         target_sub4 = F.interpolate(target, pred_sub4.size()[2:], mode='bilinear', align_corners=True).squeeze(1).long()
