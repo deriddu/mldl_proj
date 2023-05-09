@@ -19,6 +19,8 @@ from loading_data import loading_data
 from utils import *
 from timer import Timer
 import pdb
+from icnet_loss import ICNetLoss
+
 
 exp_name = cfg.TRAIN.EXP_NAME
 log_txt = cfg.TRAIN.EXP_LOG_PATH + '/' + exp_name + '.txt'
@@ -65,8 +67,12 @@ def main():
         net = net.cuda()
 
     net.train()
-    # Binary Classification Loss, combines a sigmoid layer and a BCE Loss
-    criterion = torch.nn.BCEWithLogitsLoss().cuda()
+    # Criterion for ENet
+    # criterion = torch.nn.BCEWithLogitsLoss().cuda()
+
+    # Criterion for ICNet
+    criterion = ICNetLoss()
+
     # Method for stochastic optimization (Adam's algorithm)
     optimizer = optim.Adam(net.parameters(), lr=cfg.TRAIN.LR, weight_decay=cfg.TRAIN.WEIGHT_DECAY)
     scheduler = StepLR(optimizer, step_size=cfg.TRAIN.NUM_EPOCH_LR_DECAY, gamma=cfg.TRAIN.LR_DECAY)
@@ -98,7 +104,7 @@ def train(train_loader, net, criterion, optimizer, epoch):
         # Compute the output of the model for the current batch
         outputs = net(inputs)
         # Compute the loss between the predicted outputs and the ground truth labels
-        loss = criterion(outputs[0], labels.unsqueeze(1).float())
+        loss = criterion(outputs, labels)
         # Compute the gradients of the loss with respect to the model parameters
         loss.backward()
         # Update the model parameters based on the computed gradients and the optimization algorithm
