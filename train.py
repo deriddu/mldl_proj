@@ -104,7 +104,7 @@ def train(train_loader, net, criterion, optimizer, epoch):
         # Compute the output of the model for the current batch
         outputs = net(inputs)
         # Compute the loss between the predicted outputs and the ground truth labels
-        loss = criterion(outputs, labels)
+        loss = criterion(outputs.squeeze_(1), labels)
         # Compute the gradients of the loss with respect to the model parameters
         loss.backward()
         # Update the model parameters based on the computed gradients and the optimization algorithm
