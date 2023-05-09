@@ -1,25 +1,15 @@
-import os
-import random
-
 import torch
 from torch import optim
 from torch.autograd import Variable
-from torch.nn import NLLLoss2d
 from torch.optim.lr_scheduler import StepLR
-from torchvision.utils import save_image
 import torchvision.transforms as standard_transforms
-import torchvision.utils as vutils
 from tensorboardX import SummaryWriter
 
-from model_enet import ENet
-from model_icnet import ICNet
-from base import BaseModel
-from config import cfg
-from loading_data import loading_data
-from utils import *
-from timer import Timer
-import pdb
-from icnet_loss import ICNetLoss
+from model.model_icnet import ICNet
+from dataset.loading_data import loading_data
+from util.utils import *
+from util.timer import Timer
+from model.icnet_loss import ICNetLoss
 
 
 exp_name = cfg.TRAIN.EXP_NAME
@@ -32,7 +22,7 @@ train_loader, val_loader, restore_transform = loading_data()
 
 def main():
 
-    cfg_file = open('./config.py', "r")
+    cfg_file = open('config/config.py', "r")
     cfg_lines = cfg_file.readlines()
 
     with open(log_txt, 'a') as f:
