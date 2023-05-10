@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 import torch
 import torch.nn as nn
-from base import BaseBackbone
+from model.base import BaseBackbone
 
 
 # ------------------------------------------------------------------------------

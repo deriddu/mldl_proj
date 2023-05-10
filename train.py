@@ -31,7 +31,6 @@ def main():
         torch.cuda.set_device(cfg.TRAIN.GPU_ID[0])
     torch.backends.cudnn.benchmark = True
 
-    net = []
     ''' # ENet
     if cfg.TRAIN.STAGE == 'all':
         net = ENet(only_encode=False)  # ENet / BiSeNet / ICNet

@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from collections import OrderedDict
 import torchvision.models as models
 
-from base import BaseModel
+from model.base import BaseModel
 from resnet import ResNet
 
 
