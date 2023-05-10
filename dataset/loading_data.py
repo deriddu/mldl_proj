@@ -1,6 +1,6 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
-import transforms as own_transforms
+import dataset.transforms as own_transforms
 from dataset.resortit import resortit
 from config.config import cfg
 
