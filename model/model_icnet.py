@@ -8,7 +8,7 @@ from collections import OrderedDict
 import torchvision.models as models
 
 from model.base import BaseModel
-from resnet import ResNet
+from model.resnet import ResNet
 
 
 # ------------------------------------------------------------------------------
